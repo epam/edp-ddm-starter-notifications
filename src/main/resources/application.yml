@@ -1,0 +1,21 @@
+data-platform:
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      custom-config:
+        "[enable.idempotence]": true
+    topic-properties:
+      creation:
+        enabled: true
+        timeout-in-seconds: 60
+      retention:
+        default-in-days: 7
+        num-partitions: 1
+        replication-factor: 1
+    error-handler:
+      initial-interval: 1500
+      max-elapsed-time: 6000
+      multiplier: 2
+    topics:
+      user-notifications: user-notifications

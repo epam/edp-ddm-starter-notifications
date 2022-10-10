@@ -16,11 +16,18 @@
 
 package com.epam.digital.data.platform.starter.notifications.facade;
 
-import com.epam.digital.data.platform.starter.kafka.config.properties.KafkaProperties;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.epam.digital.data.platform.notification.dto.ChannelObject;
 import com.epam.digital.data.platform.notification.dto.NotificationContextDto;
-import com.epam.digital.data.platform.notification.dto.NotificationDto;
-import com.epam.digital.data.platform.notification.dto.NotificationRecordDto;
+import com.epam.digital.data.platform.notification.dto.Recipient;
+import com.epam.digital.data.platform.notification.dto.UserNotificationDto;
+import com.epam.digital.data.platform.notification.dto.UserNotificationMessageDto;
+import com.epam.digital.data.platform.starter.kafka.config.properties.KafkaProperties;
 import com.epam.digital.data.platform.starter.notifications.producer.NotificationProducer;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,55 +36,56 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 
-import java.util.Map;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class NotificationProducerTest {
 
-    private NotificationFacade notificationFacade;
+  private UserNotificationFacade notificationFacade;
 
-    @InjectMocks
-    private NotificationProducer notificationProducer;
+  @InjectMocks
+  private NotificationProducer notificationProducer;
 
-    @Mock
-    private KafkaProperties kafkaProperties;
-    @Mock
-    private KafkaTemplate<String, Object> kafkaTemplate;
+  @Mock
+  private KafkaProperties kafkaProperties;
+  @Mock
+  private KafkaTemplate<String, Object> kafkaTemplate;
 
-    @BeforeEach
-    void setUp() {
-        notificationFacade = new KafkaNotificationFacade(notificationProducer);
-    }
+  @BeforeEach
+  void setUp() {
+    notificationFacade = new UserKafkaNotificationFacade(notificationProducer);
+  }
 
-    @Test
-    void shouldSendNotification() {
-        when(kafkaProperties.getTopics()).thenReturn(Map.of("user-notifications", "topic"));
-        NotificationRecordDto notificationRecord = createNotificationRecord();
+  @Test
+  void shouldSendNotification() {
+    when(kafkaProperties.getTopics()).thenReturn(Map.of("user-notifications", "topic"));
+    var notificationRecord = createNotificationRecord();
 
-        notificationFacade.sendNotification(notificationRecord);
+    notificationFacade.sendNotification(notificationRecord);
 
-        verify(kafkaTemplate).send("topic", notificationRecord);
-    }
+    verify(kafkaTemplate).send("topic", notificationRecord);
+  }
 
-    private NotificationRecordDto createNotificationRecord() {
-        return NotificationRecordDto.builder()
-                .context(NotificationContextDto.builder()
-                        .application("bpms")
-                        .businessActivity("Activity_1")
-                        .businessActivityInstanceId("e2503352-bcb2-11ec-b217-0a580a831053")
-                        .businessProcess("add-lab")
-                        .businessProcessDefinitionId("add-lab:5:ac2dfa60-bbe2-11ec-8421-0a58")
-                        .businessProcessInstanceId("e2503352-bcb2-11ec-b217-0a580a831054")
-                        .build())
-                .notification(NotificationDto.builder()
-                        .recipient("testuser")
-                        .subject("sign notification")
-                        .template("template-id")
-                        .templateModel(Map.of("key", "value"))
-                        .build())
-                .build();
-    }
+  private UserNotificationMessageDto createNotificationRecord() {
+    return UserNotificationMessageDto.builder()
+        .recipients(List.of(Recipient.builder()
+            .channels(List.of(ChannelObject.builder()
+                .channel("EMAIL")
+                .email("email@test.com")
+                .build()))
+            .id("testuser")
+            .build()))
+        .context(NotificationContextDto.builder()
+            .application("bpms")
+            .businessActivity("Activity_1")
+            .businessActivityInstanceId("e2503352-bcb2-11ec-b217-0a580a831053")
+            .businessProcess("add-lab")
+            .businessProcessDefinitionId("add-lab:5:ac2dfa60-bbe2-11ec-8421-0a58")
+            .businessProcessInstanceId("e2503352-bcb2-11ec-b217-0a580a831054")
+            .build())
+        .notification(UserNotificationDto.builder()
+            .templateName("template-id")
+            .title("sign notification")
+            .ignoreChannelPreferences(true)
+            .build())
+        .build();
+  }
 }

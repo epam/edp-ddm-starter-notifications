@@ -16,20 +16,9 @@
 
 package com.epam.digital.data.platform.starter.notifications.facade;
 
+import com.epam.digital.data.platform.notification.dto.UserNotificationMessageDto;
 
-import com.epam.digital.data.platform.notification.dto.NotificationRecordDto;
-import com.epam.digital.data.platform.starter.notifications.producer.NotificationProducer;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+public interface UserNotificationFacade {
 
-@Component
-@RequiredArgsConstructor
-public class KafkaNotificationFacade implements NotificationFacade {
-
-    private final NotificationProducer notificationProducer;
-
-    @Override
-    public void sendNotification(NotificationRecordDto notificationRecordDto) {
-        notificationProducer.send(notificationRecordDto);
-    }
+    void sendNotification(UserNotificationMessageDto notificationMessageDto);
 }

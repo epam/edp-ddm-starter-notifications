@@ -16,9 +16,8 @@
 
 package com.epam.digital.data.platform.starter.notifications.producer;
 
-
+import com.epam.digital.data.platform.notification.dto.UserNotificationMessageDto;
 import com.epam.digital.data.platform.starter.kafka.config.properties.KafkaProperties;
-import com.epam.digital.data.platform.notification.dto.NotificationRecordDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -33,9 +32,9 @@ public class NotificationProducer {
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
 
-    public void send(NotificationRecordDto notificationRecord) {
+    public void send(UserNotificationMessageDto notificationMessageDto) {
         var topic = kafkaProperties.getTopics().get("user-notifications");
-        kafkaTemplate.send(topic, notificationRecord);
-        log.info("Kafka event sent, context: {}", notificationRecord.getContext());
+        kafkaTemplate.send(topic, notificationMessageDto);
+        log.info("Kafka event sent, context: {}", notificationMessageDto.getContext());
     }
 }

@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.epam.digital.data.platform</groupId>
         <artifactId>low-code-platform-parent</artifactId>
-        <version>1.6.0.1</version>
+        <version>1.6.0.4</version>
         <relativePath/>
     </parent>
 
@@ -16,7 +16,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
-        <spring.boot.dependencies.version>2.6.1</spring.boot.dependencies.version>
+        <spring.boot.dependencies.version>2.6.14</spring.boot.dependencies.version>
         <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <ddm-starter-kafka.version>1.6.0.4</ddm-starter-kafka.version>

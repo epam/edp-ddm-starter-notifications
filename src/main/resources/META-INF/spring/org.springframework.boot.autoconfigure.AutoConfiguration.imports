@@ -1,2 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.epam.digital.data.platform.starter.notifications.NotificationsAutoConfiguration
